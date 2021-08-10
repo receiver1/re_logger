@@ -1,2 +1,2 @@
 # re_logger
-recommented to use with std::format
+recommended to use with std::format
