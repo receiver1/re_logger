@@ -27,7 +27,7 @@ void logger::set_log_file(std::string name)
 {
 	std::string date_format {"%date%"};
 
-	size_t date_pos = name.find(date_format);
+	size_t date_pos {name.find(date_format)};
 	if (date_pos != name.npos)
 	{
 		std::string time {get_time()};
