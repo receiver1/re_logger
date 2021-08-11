@@ -11,6 +11,7 @@ std::ostream &color::yellow(std::ostream &os) { set(6); return os; }
 std::ostream &color::red(std::ostream &os) { set(12); return os; }
 
 std::string log_file {"log.txt"};
+std::mutex log_lock;
 
 std::string logger::get_time()
 {
@@ -27,7 +28,7 @@ void logger::set_log_file(std::string name)
 {
 	std::string date_format {"%date%"};
 
-	size_t date_pos {name.find(date_format)};
+	size_t date_pos = name.find(date_format);
 	if (date_pos != name.npos)
 	{
 		std::string time {get_time()};
@@ -51,6 +52,8 @@ void logger::error(std::string text) {
 
 void logger::log(color_method_t color, std::string tag, std::string text)
 {
+	log_lock.lock();
+
 	std::string time {get_time()};
 
 	std::ofstream file(log_file, std::ios::app);
@@ -60,6 +63,7 @@ void logger::log(color_method_t color, std::string tag, std::string text)
 			<< " | " << tag
 			<< " | " << text
 			<< std::endl;
+		file.flush();
 
 		file.close();
 	}
@@ -68,4 +72,7 @@ void logger::log(color_method_t color, std::string tag, std::string text)
 		<< " | " << color << tag
 		<< color::reset << " | " << text
 		<< std::endl;
+	std::cout.flush();
+
+	log_lock.unlock();
 }
